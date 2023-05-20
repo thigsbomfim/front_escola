@@ -2,33 +2,30 @@ import { toast } from 'react-toastify';
 import { isEmail } from 'validator';
 import * as actions from '../../../store/modules/auth/actions';
 
-const handleSubmit = async (
-  e,
+const handleSubmit = async ({
   email,
   password,
   prevPath,
-  setFormErrors,
-  formErrors,
   navigate,
   dispatch,
-) => {
-  e.preventDefault();
+}) => {
+  let formErrors = false;
 
   if (!isEmail(email)) {
-    setFormErrors(true);
+    formErrors = true;
     toast.error('Email inválido');
   }
 
   if (password.length < 6 || password.length > 50) {
-    setFormErrors(true);
+    formErrors = true;
     toast.error('Senha inválida');
   }
+
+  if (formErrors) return;
 
   const callback = (params) => {
     navigate(params);
   };
-
-  if (formErrors) return;
 
   dispatch(actions.LoginRequest({ email, password, prevPath, callback }));
 };

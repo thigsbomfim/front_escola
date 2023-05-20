@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading';
-import handle from '../../services/Register/handleSubmit';
+import handle from '../../services/requests/Register/handleSubmit';
 import { Container } from '../../styles/GlobalStyle';
 import { Form } from './styled';
 
@@ -16,7 +16,6 @@ function Register() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [formErrors, setFormErrors] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,17 +27,15 @@ function Register() {
   }, []);
 
   const handleSubmit = (e) => {
-    handle(
-      e,
+    e.preventDefault();
+    handle({
       id,
       nome,
       email,
       password,
-      setFormErrors,
-      formErrors,
       navigate,
       dispatch,
-    );
+    });
   };
 
   return (

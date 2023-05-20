@@ -10,7 +10,6 @@ import { Form } from './styled';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [formErrors, setFormErrors] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,16 +17,14 @@ function Login() {
   const isLoading = useSelector((state) => state.auth.isLoading);
 
   const handleSubmit = (e) => {
-    handle(
-      e,
+    e.preventDefault();
+    handle({
       email,
       password,
       prevPath,
-      setFormErrors,
-      formErrors,
       navigate,
       dispatch,
-    );
+    });
   };
 
   return (

@@ -1,33 +1,31 @@
 import { toast } from 'react-toastify';
 import isEmail from 'validator/lib/isEmail';
-import * as actions from '../../store/modules/auth/actions';
+import * as actions from '../../../store/modules/auth/actions';
 
-const handleSubmit = async (
-  e,
+const handleSubmit = async ({
   id,
   nome,
   email,
   password,
-  setFormErrors,
-  formErrors,
   navigate,
   dispatch,
-) => {
-  e.preventDefault();
+}) => {
+  let hasErrors = false;
+
   if (nome.length < 3 || nome.length > 255) {
-    setFormErrors(true);
+    hasErrors = true;
     toast.error('Nome deve ter entre 3 e 255 caracteres');
   }
   if (!isEmail(email)) {
-    setFormErrors(true);
+    hasErrors = true;
     toast.error('Email inválido');
   }
   if (!id && (password.length < 6 || password.length > 50)) {
-    setFormErrors(true);
+    hasErrors = true;
     toast.error('Senha deve ter entre 6 e 50 caracteres');
   }
 
-  if (formErrors) return;
+  if (hasErrors) return;
 
   const callback = (params) => {
     return navigate(params);
