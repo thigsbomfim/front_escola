@@ -1,28 +1,54 @@
-import { useDispatch } from 'react-redux';
-import * as exampleActions from '../../store/modules/example/actions';
+import { get } from 'lodash';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Loading from '../../components/Loading';
+import handle from '../../services/requests/Login/handleSubmit';
 import { Container } from '../../styles/GlobalStyle';
-import { Paragrafo, Title } from './styled';
+import { Form } from './styled';
 
 function Login() {
-  // redux
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [formErrors, setFormErrors] = useState(false);
   const dispatch = useDispatch();
-  const handleClick = (e) => {
-    e.preventDefault();
-    // busca a action do redux ao clicar no botão
-    dispatch(exampleActions.clicaBotaoRequest());
+  const navigate = useNavigate();
+  const location = useLocation();
+  const prevPath = get(location, 'state.prevPath', '/');
+  const isLoading = useSelector((state) => state.auth.isLoading);
+
+  const handleSubmit = (e) => {
+    handle(
+      e,
+      email,
+      password,
+      prevPath,
+      setFormErrors,
+      formErrors,
+      navigate,
+      dispatch,
+    );
   };
 
   return (
     <Container>
-      <Title isRed>
-        Login
-        <small>Oie</small>
-      </Title>
-      <Paragrafo>Lorem ipsum dolor sit amet.</Paragrafo>
-
-      <button type="button" onClick={handleClick}>
-        Enviar
-      </button>
+      <Loading isLoading={isLoading} />
+      <h1>Login</h1>
+      <Form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Seu email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Sua senha"
+        />
+        <button type="submit">Entrar</button>
+      </Form>
     </Container>
   );
 }

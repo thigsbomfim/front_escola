@@ -1,14 +1,28 @@
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
 
-function Private({ children }) {
-  const isLoggedIn = false;
+const Private = ({ children, isClosed }) => {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  return isLoggedIn ? children : <Navigate to="/" replace />;
-}
+  const location = useLocation();
+
+  if (isClosed && !isLoggedIn) {
+    return (
+      <Navigate to={`/login`} state={{ prevPath: location.pathname }} replace />
+    );
+  } else {
+    return children;
+  }
+};
+
+Private.defaultProps = {
+  isClosed: false,
+};
 
 Private.propTypes = {
   children: PropTypes.element,
+  isClosed: PropTypes.bool,
 };
 
 export default Private;
